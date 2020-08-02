@@ -59,7 +59,7 @@
 
 - name: "Use SSL in config for communicating with Filebeat clients"
   include: ssl.yml
-  when: logstash_clients_configs|int > 0
+  when: logstash_clients_configs_use_ssl|int > 0
   
 - name: "Started Logstash"
   systemd:
