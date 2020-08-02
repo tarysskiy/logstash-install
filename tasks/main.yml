@@ -18,8 +18,8 @@
     mode: "{{ item.mode }}"
   loop: "{{ logstash_repo_file }}"  
 
-- name: Install Logstash.
-  package:
+- name: "Install Logstash"
+  yum:
     name: logstash
     state: present
 
@@ -73,12 +73,13 @@
 - name: "Use SSL in config for communicating with Filebeat clients"
   include: ssl.yml
   when: logstash_clients_configs_use_ssl|int > 0
-  
+
 - name: "Started Logstash"
   systemd:
     name: logstash
     state: "{{ logstash_service_state }}"
     enabled: "{{ logstash_service_enabled }}"
+    daemon_reload: yes
 
 
 
