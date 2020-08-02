@@ -1,0 +1,71 @@
+---
+- name: "Install java"
+  yum:
+    name: "{{ java_version }}"
+    state: present
+
+- name: "Install Logstash"
+  yum:
+    name: "{{ logstash_repo }}"
+    state: present
+    validate_certs: false
+
+- name: "Creating logstash config dirs"
+  file:
+    path: "{{ logstash_config_dir }}"
+    owner: root
+    group: root
+    recurse: yes
+  loop: 
+    - "{{ logstash_config_dir }}"
+    - "{{ logstash_pipelines_config_dir }}"
+
+- name: "Create logstash config file"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ logstash_conf_templates }}" 
+
+- name: "Copy Logstash LVM options"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ logstash_jvm_options }}"
+
+- name: "Copy Logstash pipelines conf"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ logstash_pipelines_conf }}"
+
+- name: "Deploy config for communicating with Filebeat clients"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ logstash_clients_configs_path }}"
+  when: use_logstash_clients_configs|int > 0
+
+- name: "Use SSL in config for communicating with Filebeat clients"
+  include: ssl.yml
+  when: logstash_clients_configs|int > 0
+  
+- name: "Started Logstash"
+  systemd:
+    name: logstash
+    state: "{{ logstash_service_state }}"
+    enabled: "{{ logstash_service_enabled }}"
+
+
+

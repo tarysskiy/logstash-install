@@ -1,0 +1,40 @@
+---
+- name: "Ensure Logstash SSL key pair directory exists"
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  loop:
+    - "{{ logstash_ssl_key_dir }}"
+    - "{{ logstash_ssl_certificate_dir }}"
+    - "{{ logstash_ssl_authorities_dir }}"
+
+- name: "Copy SSL key for Logstash"
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ logstash_ssl_key }}"
+  when: logstash_ssl_key is defined
+
+- name: "Copy SSL cert for Logstash"
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ logstash_ssl_certificate }}"
+  when: logstash_ssl_certificate is defined
+
+- name: "Copy SSL authorities for Logstash"
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ logstash_ssl_certificate_authorities }}"
+  when: logstash_ssl_certificate_authorities is defined

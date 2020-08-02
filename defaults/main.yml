@@ -1,0 +1,85 @@
+---
+
+logstash_version: 7.8.1
+
+java_version: "{%- if logstash_version is version_compare('7.0.0', '<') -%} java-1.8.0-openjdk {%- else -%} java-11-openjdk.x86_64 {%- endif %}"
+
+logstash_repo: "https://artifacts.elastic.co/downloads/logstash/logstash-{{ logstash_version }}.rpm"
+
+logstash_config_dir: "/etc/logstash"
+
+logstash_pipelines_config_dir: "{{ logstash_config_dir }}/conf.d"
+
+logstash_elasticsearch_url: "http://{{ inventory_hostname }}:9200"
+
+logstash_listen_port_beats: 5044
+
+logstash_indexname: "%{[fields][indexname]}-%{[fields][env]}-%{+YYYY.MM.dd}"
+
+logstash_xms: "1g"
+
+logstash_xmx: "1g"
+
+logstash_conf_templates:
+- src: "logstash.yml.j2"
+  dest: "{{ logstash_config_dir }}/logstash.yml"
+  owner: "root"
+  group: "root"
+  mode: "0644"
+
+logstash_jvm_options:
+- src: "jvm.options.j2"
+  dest: "{{ logstash_config_dir }}/jvm.options"
+  owner: "root"
+  group: "root"
+  mode: "0644"
+
+logstash_pipelines_conf:
+- src: "pipelines.yml.j2"
+  dest: "{{ logstash_config_dir }}/pipelines.yml"
+  owner: "root"
+  group: "root"
+  mode: "0644"
+
+use_logstash_clients_configs: 0
+
+logstash_clients_configs_path:
+- src: "conf.d/01-beats.conf.j2"
+  dest: "{{ logstash_pipelines_config_dir }}/01-beats.conf"
+  owner: "root"
+  group: "root"
+  mode: "0644"
+
+logstash_clients_configs_use_ssl: 0
+
+logstash_ssl_key_dir: "/etc/pki/tls/private"
+
+logstash_ssl_certificate_dir: "/etc/pki/tls/certs"
+
+logstash_ssl_authorities_dir: "/etc/pki/tls/certs"
+
+# logstash_ssl_key:
+# - src: "files/ssl/cert.chain.pem"
+#   dest: "{{ logstash_ssl_certificate_dir }}/cert.chain.pem"
+#   owner: root
+#   group: root
+#   mode: "0644" 
+
+# logstash_ssl_certificate:
+# - src: "files/ssl/cert.key.pem"
+#   dest: "{{ logstash_ssl_key_dir }}/cert.key.pem"
+#   owner: root
+#   group: root
+#   mode: "0644" 
+
+# logstash_ssl_certificate_authorities:
+# - src: "files/ssl/cert.key.pem"
+#   dest: "{{ logstash_ssl_authorities_dir }}/cert.key.pem"
+#   owner: root
+#   group: root
+#   mode: "0644" 
+
+
+logstash_service_state: "restarted" # started | restarted | stopped
+
+logstash_service_enabled: "true" # true | false
