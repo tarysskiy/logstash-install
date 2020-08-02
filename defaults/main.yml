@@ -20,6 +20,13 @@ logstash_xms: "1g"
 
 logstash_xmx: "1g"
 
+logstash_repo_file:
+- src: "yum.repos.d/logstash.repo.j2"
+  dest: "/etc/yum.repos.d/logstash.repo"
+  owner: "root"
+  group: "root"
+  mode: "0644"
+
 logstash_conf_templates:
 - src: "logstash.yml.j2"
   dest: "{{ logstash_config_dir }}/logstash.yml"

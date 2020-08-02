@@ -4,11 +4,24 @@
     name: "{{ java_version }}"
     state: present
 
-- name: "Install Logstash"
-  yum:
-    name: "{{ logstash_repo }}"
+- name: "Add Elasticsearch GPG key"
+  rpm_key:
+    key: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
     state: present
-    validate_certs: false
+
+- name: "Add Logstash repository"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ logstash_repo_file }}"  
+
+- name: Install Logstash.
+  package:
+    name: logstash
+    state: present
 
 - name: "Creating logstash config dirs"
   file:
