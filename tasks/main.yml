@@ -79,6 +79,7 @@
     name: logstash
     state: "{{ logstash_service_state }}"
     enabled: "{{ logstash_service_enabled }}"
+    daemon_reload: yes
 
 
 
