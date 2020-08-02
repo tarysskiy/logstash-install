@@ -3,14 +3,14 @@
 
 input {
   beats {
-    port => 5044
+    port => {{ logstash_listen_port_beats }}
   }
 }
 
 output {
   elasticsearch {
-    hosts => ["http://localhost:9200"]
-    index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+    hosts => ["{{ logstash_elasticsearch_url }}"]
+    index => "{{ logstash_indexname }}"
     #user => "elastic"
     #password => "changeme"
   }
