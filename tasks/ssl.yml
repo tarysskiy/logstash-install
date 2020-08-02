@@ -17,7 +17,7 @@
     group: "{{ item.group }}"
     mode: "{{ item.mode }}"
   loop: "{{ logstash_ssl_key }}"
-  when: logstash_ssl_key is defined
+  when: ( logstash_ssl_key is defined ) and ( logstash_ssl_key|length > 0 )
 
 - name: "Copy SSL cert for Logstash"
   copy:
@@ -27,7 +27,7 @@
     group: "{{ item.group }}"
     mode: "{{ item.mode }}"
   loop: "{{ logstash_ssl_certificate }}"
-  when: logstash_ssl_certificate is defined
+  when: ( logstash_ssl_certificate is defined ) and ( logstash_ssl_certificate|length > 0 )
 
 - name: "Copy SSL authorities for Logstash"
   copy:
@@ -37,4 +37,4 @@
     group: "{{ item.group }}"
     mode: "{{ item.mode }}"
   loop: "{{ logstash_ssl_certificate_authorities }}"
-  when: logstash_ssl_certificate_authorities is defined
+  when: ( logstash_ssl_certificate_authorities is defined ) and ( logstash_ssl_certificate|length > 0 )
