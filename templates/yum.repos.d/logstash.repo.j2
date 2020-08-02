@@ -1,6 +1,10 @@
 [logstash-{{ logstash_version }}]
 name=Elastic repository for {{ logstash_version }} packages
-baseurl=https://artifacts.elastic.co/packages/{{ logstash_version }}/yum
+{% if logstash_version is version_compare('7.0.0', '<') %}
+baseurl=https://artifacts.elastic.co/packages/6.x/yum
+{% else -%}
+baseurl=https://artifacts.elastic.co/packages/7.x/yum
+{% endif %}
 gpgcheck=1
 gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
 enabled=1
